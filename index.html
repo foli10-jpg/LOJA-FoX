@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Loja: Gjeje Numrin</title>
+  <style>
+    :root{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;}
+    body{display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:linear-gradient(135deg,#0f172a,#0f3b6b);color:#e6eef8}
+    .card{background:rgba(255,255,255,0.06);backdrop-filter:blur(6px);padding:28px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6);width:100%;max-width:420px}
+    h1{margin:0 0 8px;font-size:20px}
+    p.lead{margin:0 0 18px;opacity:0.9}
+    .controls{display:flex;gap:8px;margin-bottom:12px}
+    input[type=number]{flex:1;padding:10px;border-radius:8px;border:0;font-size:16px}
+    button{padding:10px 14px;border-radius:8px;border:0;background:#2b8cff;color:white;cursor:pointer;font-weight:600}
+    .info{margin-top:10px;min-height:28px}
+    .meta{display:flex;justify-content:space-between;margin-top:12px;font-size:14px;opacity:0.9}
+    .small{font-size:13px;opacity:0.85}
+    .footer{margin-top:14px;text-align:center;opacity:0.8;font-size:13px}
+    .success{color:#9be78b}
+    .hint{color:#ffd166}
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <h1>Loja: Gjeje numrin</h1>
+    <p class="lead">Zgjedh një gamë, pastaj provo të gjesh numrin e fshehtë. Unë do të të them nëse je lart ose poshtë.</p>
+
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input id="min" type="number" value="1" title="Min" aria-label="Min" style="width:100px">
+      <input id="max" type="number" value="100" title="Max" aria-label="Max" style="width:100px">
+      <button id="start">Nis</button>
+    </div>
+
+    <div class="controls">
+      <input id="guess" type="number" placeholder="Shkruaj një numër" aria-label="Shkruaj numrin">
+      <button id="check">Provë</button>
+    </div>
+
+    <div class="info" id="message">Shtyp "Nis" për të filluar lojën.</div>
+
+    <div class="meta">
+      <div class="small">Tentativa: <span id="attempts">0</span></div>
+      <div class="small">Gama: <span id="range">1 - 100</span></div>
+    </div>
+
+    <div class="footer small">Krijuar me HTML, CSS dhe JavaScript — thjesht kopjo në një file .html dhe hap me browser.</div>
+  </main>
+
+  <script>
+    const startBtn = document.getElementById('start');
+    const checkBtn = document.getElementById('check');
+    const guessInput = document.getElementById('guess');
+    const message = document.getElementById('message');
+    const attemptsEl = document.getElementById('attempts');
+    const rangeEl = document.getElementById('range');
+    const minInput = document.getElementById('min');
+    const maxInput = document.getElementById('max');
+
+    let secret = null;
+    let attempts = 0;
+    let min = 1, max = 100;
+
+    function randomInt(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+
+    function setMessage(html, cls){ message.innerHTML = html; message.className = cls || ''; }
+
+    startBtn.addEventListener('click',()=>{
+      min = parseInt(minInput.value) || 1;
+      max = parseInt(maxInput.value) || 100;
+      if(min >= max){ setMessage('Gama nuk eshte e sakte. Sigurohu qe min < max.', 'hint'); return; }
+      secret = randomInt(min,max);
+      attempts = 0;
+      attemptsEl.textContent = attempts;
+      rangeEl.textContent = `${min} - ${max}`;
+      setMessage('Lojë nisur! Shkruaj një numër dhe kliko "Provë".', '');
+      guessInput.disabled = false;
+      checkBtn.disabled = false;
+      guessInput.focus();
+      console.log('secret:', secret);
+    });
+
+    checkBtn.addEventListener('click',()=>{
+      if(secret === null){ setMessage('Kliko "Nis" për të filluar lojën.', 'hint'); return; }
+      const val = parseInt(guessInput.value);
+      if(Number.isNaN(val)){ setMessage('Shkruaj një numër të vlefshëm.', 'hint'); return; }
+      attempts++;
+      attemptsEl.textContent = attempts;
+      if(val === secret){ setMessage(`Bravo! E gjete numrin <strong class="success">${secret}</strong> në ${attempts} tentativa. Kliko "Nis" për lojë të re.`, 'success');
+        guessInput.disabled = true; checkBtn.disabled = true; return; }
+      if(val > secret){ setMessage('Shume lart — provo një numër më të vogël.', 'hint'); }
+      else { setMessage('Shume poshtë — provo një numër më të madh.', 'hint'); }
+
+      // Optional small hint: distance
+      const dist = Math.abs(val - secret);
+      if(dist <= Math.max(1, Math.round((max-min)/10))){
+        message.innerHTML += ' <em>(Afër!)</em>';
+      }
+    });
+
+    // Enter to submit
+    guessInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') checkBtn.click(); });
+
+    // Initialize
+    guessInput.disabled = true;
+    checkBtn.disabled = false;
+  </script>
+</body>
+</html>
