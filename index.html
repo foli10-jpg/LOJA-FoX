@@ -3,107 +3,156 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Loja: Gjeje Numrin</title>
+  <title>Loja: Gjeje Numrin PRO</title>
   <style>
-    :root{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;}
-    body{display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:linear-gradient(135deg,#0f172a,#0f3b6b);color:#e6eef8}
-    .card{background:rgba(255,255,255,0.06);backdrop-filter:blur(6px);padding:28px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6);width:100%;max-width:420px}
-    h1{margin:0 0 8px;font-size:20px}
-    p.lead{margin:0 0 18px;opacity:0.9}
-    .controls{display:flex;gap:8px;margin-bottom:12px}
-    input[type=number]{flex:1;padding:10px;border-radius:8px;border:0;font-size:16px}
-    button{padding:10px 14px;border-radius:8px;border:0;background:#2b8cff;color:white;cursor:pointer;font-weight:600}
-    .info{margin-top:10px;min-height:28px}
-    .meta{display:flex;justify-content:space-between;margin-top:12px;font-size:14px;opacity:0.9}
-    .small{font-size:13px;opacity:0.85}
-    .footer{margin-top:14px;text-align:center;opacity:0.8;font-size:13px}
-    .success{color:#9be78b}
-    .hint{color:#ffd166}
+    :root{
+      --bg1:#0f172a;
+      --bg2:#1e3a8a;
+      --card-bg:rgba(255,255,255,0.1);
+      --accent:#3b82f6;
+      --glass:rgba(255,255,255,0.15);
+      font-family:Inter, Arial;
+    }
+    body{
+      margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;
+      background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#eef2ff;
+    }
+    .card{
+      width:100%;max-width:460px;background:var(--glass);
+      backdrop-filter:blur(10px);
+      padding:28px;border-radius:18px;
+      box-shadow:0 10px 35px rgba(0,0,0,0.45);
+      animation:fadeIn .7s ease;
+    }
+    @keyframes fadeIn{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+    h1{margin:0 0 8px;font-size:22px;text-align:center}
+    .lead{text-align:center;margin-bottom:18px;opacity:0.9}
+    .row{display:flex;gap:10px;margin-bottom:12px}
+    input,button{
+      padding:12px;border-radius:10px;border:0;font-size:16px;
+    }
+    input{flex:1;}
+    button{
+      background:var(--accent);color:white;font-weight:600;cursor:pointer;
+      transition:0.2s;
+    }
+    button:hover{transform:scale(1.05);box-shadow:0 0 10px #3b82f6aa;}
+    .info{min-height:32px;margin-top:12px;font-size:15px;text-align:center}
+    .success{color:#7ef58c;font-weight:600;font-size:17px}
+    .hint{color:#facc15}
+    .meta{display:flex;justify-content:space-between;margin-top:16px;opacity:0.85}
+    .footer{text-align:center;margin-top:20px;font-size:13px;opacity:0.7}
+    /* Timer */
+    #timer{font-weight:600;color:#93c5fd}
   </style>
 </head>
 <body>
-  <main class="card" role="main">
-    <h1>Loja: Gjeje numrin</h1>
-    <p class="lead">Zgjedh një gamë, pastaj provo të gjesh numrin e fshehtë. Unë do të të them nëse je lart ose poshtë.</p>
+  <main class="card">
+    <h1>Loja PRO: Gjeje Numrin</h1>
+    <p class="lead">Zgjedh gamën, dhe provo të gjesh numrin e fshehtë me kohëmatës, tinguj dhe statistika!</p>
 
-    <div style="display:flex;gap:8px;margin-bottom:12px">
-      <input id="min" type="number" value="1" title="Min" aria-label="Min" style="width:100px">
-      <input id="max" type="number" value="100" title="Max" aria-label="Max" style="width:100px">
-      <button id="start">Nis</button>
+    <div class="row">
+      <input id="min" type="number" value="1" placeholder="Min">
+      <input id="max" type="number" value="100" placeholder="Max">
+      <button id="start">NIS</button>
     </div>
 
-    <div class="controls">
-      <input id="guess" type="number" placeholder="Shkruaj një numër" aria-label="Shkruaj numrin">
-      <button id="check">Provë</button>
+    <div class="row">
+      <input id="guess" type="number" placeholder="Shkruaj numër" disabled>
+      <button id="check" disabled>PROVË</button>
     </div>
 
-    <div class="info" id="message">Shtyp "Nis" për të filluar lojën.</div>
+    <div class="info" id="message">Kliko "NIS" për të filluar lojën.</div>
 
     <div class="meta">
-      <div class="small">Tentativa: <span id="attempts">0</span></div>
-      <div class="small">Gama: <span id="range">1 - 100</span></div>
+      <div>Tentativa: <span id="attempts">0</span></div>
+      <div>Gama: <span id="range">1 - 100</span></div>
+      <div>Kohë: <span id="timer">0s</span></div>
     </div>
 
-    <div class="footer small">Krijuar me HTML, CSS dhe JavaScript — thjesht kopjo në një file .html dhe hap me browser.</div>
+    <div class="footer">Loja PRO — HTML + CSS + JS</div>
   </main>
 
-  <script>
-    const startBtn = document.getElementById('start');
-    const checkBtn = document.getElementById('check');
-    const guessInput = document.getElementById('guess');
-    const message = document.getElementById('message');
-    const attemptsEl = document.getElementById('attempts');
-    const rangeEl = document.getElementById('range');
-    const minInput = document.getElementById('min');
-    const maxInput = document.getElementById('max');
+  <audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.mp3"></audio>
+  <audio id="wrongSound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3"></audio>
 
-    let secret = null;
-    let attempts = 0;
-    let min = 1, max = 100;
+<script>
+let secret=null, attempts=0, min=1, max=100;
+let timer=0, timerInt=null;
 
-    function randomInt(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+const msg = document.getElementById('message');
+const guess = document.getElementById('guess');
+const attemptsEl=document.getElementById('attempts');
+const rangeEl=document.getElementById('range');
+const timerEl=document.getElementById('timer');
 
-    function setMessage(html, cls){ message.innerHTML = html; message.className = cls || ''; }
+const winS=document.getElementById('winSound');
+const wrongS=document.getElementById('wrongSound');
 
-    startBtn.addEventListener('click',()=>{
-      min = parseInt(minInput.value) || 1;
-      max = parseInt(maxInput.value) || 100;
-      if(min >= max){ setMessage('Gama nuk eshte e sakte. Sigurohu qe min < max.', 'hint'); return; }
-      secret = randomInt(min,max);
-      attempts = 0;
-      attemptsEl.textContent = attempts;
-      rangeEl.textContent = `${min} - ${max}`;
-      setMessage('Lojë nisur! Shkruaj një numër dhe kliko "Provë".', '');
-      guessInput.disabled = false;
-      checkBtn.disabled = false;
-      guessInput.focus();
-      console.log('secret:', secret);
-    });
+function startTimer(){
+  timer=0;
+  timerEl.textContent='0s';
+  timerInt=setInterval(()=>{
+    timer++;
+    timerEl.textContent=timer+'s';
+  },1000);
+}
+function stopTimer(){ clearInterval(timerInt); }
 
-    checkBtn.addEventListener('click',()=>{
-      if(secret === null){ setMessage('Kliko "Nis" për të filluar lojën.', 'hint'); return; }
-      const val = parseInt(guessInput.value);
-      if(Number.isNaN(val)){ setMessage('Shkruaj një numër të vlefshëm.', 'hint'); return; }
-      attempts++;
-      attemptsEl.textContent = attempts;
-      if(val === secret){ setMessage(`Bravo! E gjete numrin <strong class="success">${secret}</strong> në ${attempts} tentativa. Kliko "Nis" për lojë të re.`, 'success');
-        guessInput.disabled = true; checkBtn.disabled = true; return; }
-      if(val > secret){ setMessage('Shume lart — provo një numër më të vogël.', 'hint'); }
-      else { setMessage('Shume poshtë — provo një numër më të madh.', 'hint'); }
+function setMessage(t,c){ msg.innerHTML=t; msg.className=c||''; }
+function rand(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
 
-      // Optional small hint: distance
-      const dist = Math.abs(val - secret);
-      if(dist <= Math.max(1, Math.round((max-min)/10))){
-        message.innerHTML += ' <em>(Afër!)</em>';
-      }
-    });
+start.onclick=()=>{
+  min=parseInt(minInput.value)||1;
+  max=parseInt(maxInput.value)||100;
+  if(min>=max){ setMessage('Gama nuk është e saktë!', 'hint'); return; }
 
-    // Enter to submit
-    guessInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') checkBtn.click(); });
+  secret=rand(min,max);
+  attempts=0;
+  attemptsEl.textContent=0;
+  rangeEl.textContent=`${min} - ${max}`;
+  setMessage('Lojë nisur! Provo një numër.', '');
 
-    // Initialize
-    guessInput.disabled = true;
-    checkBtn.disabled = false;
-  </script>
+  guess.disabled=false;
+  check.disabled=false;
+  guess.value="";
+  guess.focus();
+
+  startTimer();
+  console.log('Sekreti:', secret);
+};
+
+check.onclick=()=>{
+  if(secret===null){ setMessage('Shtyp "NIS".', 'hint'); return; }
+  const val=parseInt(guess.value);
+  if(isNaN(val)){ setMessage('Shkruaj numër të vlefshëm.', 'hint'); return; }
+
+  attempts++;
+  attemptsEl.textContent=attempts;
+
+  if(val===secret){
+    setMessage(`Bravo! E gjete: <span class='success'>${secret}</span> në ${attempts} tentativa dhe ${timer}s!`, 'success');
+    winS.play();
+    stopTimer();
+    guess.disabled=true;
+    check.disabled=true;
+    saveScore();
+    return;
+  }
+
+  wrongS.play();
+  if(val>secret) setMessage('Lart — provo më të vogël.', 'hint');
+  else setMessage('Poshtë — provo më të madh.', 'hint');
+};
+
+/* Leaderboard */
+function saveScore(){
+  const best = localStorage.getItem('bestScore');
+  const current = { attempts, time:timer };
+  if(!best){ localStorage.setItem('bestScore', JSON.stringify(current)); return; }
+  const old = JSON.parse(best);
+  if(current.time < old.time){ localStorage.setItem('bestScore', JSON.stringify(current)); }
+}
+</script>
 </body>
 </html>
